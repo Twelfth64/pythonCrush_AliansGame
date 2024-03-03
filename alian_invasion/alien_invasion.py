@@ -3,6 +3,7 @@ import sys
 import pygame
 
 from settings import Settings
+from ship import Ship
 
 
 class AlienInvasion:
@@ -19,6 +20,8 @@ class AlienInvasion:
              ))
         pygame.display.set_caption("Alien Invasion")
 
+        self.ship = Ship(screen)
+
     def run_game(self) -> None:
         """Start main game loop"""
         while True:
@@ -28,6 +31,7 @@ class AlienInvasion:
                     sys.exit()
 
             self.screen.fill(self.settings.bg_color)
+            self.ship.blitme()
 
             # Display last frame
             pygame.display.flip()
