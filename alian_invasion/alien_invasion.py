@@ -5,6 +5,7 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -33,6 +34,9 @@ class AlienInvasion:
 
         self._create_fleet()
 
+        # Make Play button
+        self.play_button = Button(self, "Play")
+
     def run_game(self) -> None:
         """Start main game loop"""
         while True:
@@ -50,10 +54,18 @@ class AlienInvasion:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+
+    def _check_play_button(self, mouse_pos):
+        """Starts new game by pressing Play button"""
+        if self.play_button.rect.collidepoint(mouse_pos):
+            self.stats.game_active = True
 
     def _check_keydown_events(self, event):
         """Check if key is pressed and update ship accordingly."""
@@ -181,6 +193,10 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
+
+        # Button Play is displayed if game inactive
+        if not self.stats.game_active:
+            self.play_button.draw_button()
 
         # Display last frame
         pygame.display.flip()
