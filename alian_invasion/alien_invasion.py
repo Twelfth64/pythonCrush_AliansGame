@@ -42,7 +42,7 @@ class AlienInvasion:
                 self.ship.update()
                 self._update_bullets()
                 self._update_aliens()
-                
+
             self._update_screen()
 
     def _check_events(self):
@@ -112,7 +112,7 @@ class AlienInvasion:
 
     def _ship_hit(self):
         """Check if ship hit by alien."""
-        if stats.ships_left > 0:
+        if self.stats.ships_left > 0:
             # Decrease ship_left
             self.stats.ships_left -= 1
     
