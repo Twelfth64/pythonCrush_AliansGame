@@ -5,7 +5,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
-from alian import Alian
+from alien import Alien
 
 
 class AlienInvasion:
@@ -34,6 +34,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_aliens()
             self._update_screen()
 
     def _check_events(self):
@@ -77,10 +78,15 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
+    def _update_aliens(self):
+        """Update positions of all aliens in the fleet."""
+        self._check_fleet_edges()
+        self.aliens.update()
+
     def _create_fleet(self):
         """Make fleet of aliens and count them in a row."""
         # Space between alians equal to one alian
-        alien = Alian(self)
+        alien = Alien(self)
         alien_width, alian_height = alien.rect.size
         available_space_x = self.settings.screen_width - (2 * alien_width)
         number_aliens_x = available_space_x // (2 * alien_width)
@@ -98,12 +104,25 @@ class AlienInvasion:
 
     def _create_alien(self, alien_number, row_number):
         """Make alien and add to group aliens."""
-        alien = Alian(self)
+        alien = Alien(self)
         alien_width, alien_height = alien.rect.size
         alien.x = alien_width + 2 * alien_width * alien_number
         alien.rect.x = alien.x
         alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
         self.aliens.add(alien)
+
+    def _check_fleet_edges(self):
+        """Check if alien meet edge."""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self):
+        """Change direction of fleet."""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
 
     def _update_screen(self):
         """Update image on screen and display new frame."""
