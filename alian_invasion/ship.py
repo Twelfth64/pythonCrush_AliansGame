@@ -11,6 +11,7 @@ class Ship:
 
         # Upload ship image
         self.image = pygame.image.load('images/ship.bmp')
+        self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = self.image.get_rect()
         # Each new ship is placed at the bottom of the screen
         self.rect.midbottom = self.screen_rect.midbottom
