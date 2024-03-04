@@ -1,8 +1,10 @@
 import sys
+from time import sleep
 
 import pygame
 
 from settings import Settings
+from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -22,6 +24,9 @@ class AlienInvasion:
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Alien Invasion")
 
+        # Make game stats instance
+        self.stats = GameStats(self)
+
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
@@ -32,9 +37,12 @@ class AlienInvasion:
         """Start main game loop"""
         while True:
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+            
+            if self.stats.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
+                
             self._update_screen()
 
     def _check_events(self):
@@ -95,6 +103,36 @@ class AlienInvasion:
         self._check_fleet_edges()
         self.aliens.update()
 
+        # Check collision between ship and aliens
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self._ship_hit()
+            
+        # Check if aliens hit bottom of screen
+        self._check_aliens_bottom()
+
+    def _ship_hit(self):
+        """Check if ship hit by alien."""
+        if stats.ships_left > 0:
+            # Decrease ship_left
+            self.stats.ships_left -= 1
+    
+            # Reset aliens and bullets
+            self.aliens.empty()
+            self.bullets.empty()
+    
+            # Pause
+            sleep(1)
+        else:
+            self.stats.game_active = False
+    
+    def _check_aliens_bottom(self):
+        """Check if aliens hit bottom of screen."""
+        screen_rect = self.screen.get_rect()
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= screen_rect.bottom:
+                self._ship_hit()
+                break
+    
     def _create_fleet(self):
         """Make fleet of aliens and count them in a row."""
         # Space between alians equal to one alian
