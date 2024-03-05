@@ -9,6 +9,7 @@ class Scoreboard:
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
+        self.stats = ai_game.stats
 
         # Set font for scoreboard
         self.text_color = (30, 30, 30)
@@ -18,7 +19,8 @@ class Scoreboard:
 
     def prep_score(self):
         """Make image from current score."""
-        score_str = str(self.stats.score)
+        rounded_score = round(self.stats.score, -1)
+        score_str = "{:,}".format(rounded_score)
         self.score_image = self.font.render(score_str, True,
                             self.text_color, self.settings.bg_color)
 
