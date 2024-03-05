@@ -43,7 +43,7 @@ class AlienInvasion:
         """Start main game loop"""
         while True:
             self._check_events()
-            
+
             if self.stats.game_active:
                 self.ship.update()
                 self._update_bullets()
@@ -132,6 +132,10 @@ class AlienInvasion:
             self.sb.prep_score()
             self.sb.check_high_score()
 
+        self._start_new_level()
+
+    def _start_new_level(self):
+        """Starts new level when fleet is destroyed."""
         if not self.aliens:
             # Create a new fleet of aliens and remove current bullets
             self.bullets.empty()
@@ -139,7 +143,7 @@ class AlienInvasion:
             self.settings.increase_speed()
 
             # Increase level
-            self.stats.level +=1
+            self.stats.level += 1
             self.sb.prep_level()
 
     def _update_aliens(self):
@@ -150,7 +154,7 @@ class AlienInvasion:
         # Check collision between ship and aliens
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
-            
+
         # Check if aliens hit bottom of screen
         self._check_aliens_bottom()
 
@@ -160,17 +164,17 @@ class AlienInvasion:
             # Decrease ship_left and update score panel
             self.stats.ships_left -= 1
             self.sb.prep_ships()
-    
+
             # Reset aliens and bullets
             self.aliens.empty()
             self.bullets.empty()
-    
+
             # Pause
             sleep(1)
         else:
             self.stats.game_active = False
             pygame.mouse.set_visible(True)
-    
+
     def _check_aliens_bottom(self):
         """Check if aliens hit bottom of screen."""
         screen_rect = self.screen.get_rect()
@@ -178,7 +182,7 @@ class AlienInvasion:
             if alien.rect.bottom >= screen_rect.bottom:
                 self._ship_hit()
                 break
-    
+
     def _create_fleet(self):
         """Make fleet of aliens and count them in a row."""
         # Space between alians equal to one alian
